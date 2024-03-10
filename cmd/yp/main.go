@@ -12,9 +12,10 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "yp",
 	Short: "Year Progress Indicator",
-	Long: `The Year Progress Indicator is a Go application that visually represents how much of the current year has elapsed.
-It calculates the percentage of the year that has passed based on today's date and displays this information through 
-a progress bar composed of filled and unfilled segments.`,
+	Long: `The Year Progress Indicator is a Go application that visually represents how much of 
+the current year has elapsed. It calculates the percentage of the year that has passed based on 
+today's date and displays this information through a progress bar composed of filled and unfilled 
+segments.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runYearProgress()
 	},
@@ -28,16 +29,31 @@ func init() {
 	rootCmd.PersistentFlags().StringP("filled-char", "f", "█", "Character for filled sections of the progress bar")
 	rootCmd.PersistentFlags().StringP("empty-char", "e", "▁", "Character for empty sections of the progress bar")
 
-	viper.BindPFlag("location", rootCmd.PersistentFlags().Lookup("location"))
-	viper.BindPFlag("total_blocks", rootCmd.PersistentFlags().Lookup("total-blocks"))
-	viper.BindPFlag("filled_char", rootCmd.PersistentFlags().Lookup("filled-char"))
-	viper.BindPFlag("empty_char", rootCmd.PersistentFlags().Lookup("empty-char"))
+	if err := viper.BindPFlag("location", rootCmd.PersistentFlags().Lookup("location")); err != nil {
+		fmt.Printf("failed to bind location flag: %s", err)
+		os.Exit(1)
+	}
+	if err := viper.BindPFlag("total_blocks", rootCmd.PersistentFlags().Lookup("total-blocks")); err != nil {
+		fmt.Printf("failed to bind total_blocks flag: %s", err)
+		os.Exit(1)
+	}
+	if err := viper.BindPFlag("filled_char", rootCmd.PersistentFlags().Lookup("filled-char")); err != nil {
+		fmt.Printf("failed to bind filled_char flag: %s", err)
+		os.Exit(1)
+	}
+	if err := viper.BindPFlag("empty_char", rootCmd.PersistentFlags().Lookup("empty-char")); err != nil {
+		fmt.Printf("failed to bind empty_char flag: %s", err)
+		os.Exit(1)
+	}
 }
 
 func initConfig() {
 	viper.SetEnvPrefix("yp")
 	viper.AutomaticEnv()
-	viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Printf("failed to read in config: %s", err)
+		os.Exit(1)
+	}
 }
 
 func runYearProgress() {
