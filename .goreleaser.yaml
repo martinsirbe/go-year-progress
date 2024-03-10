@@ -1,0 +1,52 @@
+version: 1
+project_name: yp
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: ./cmd/yp
+    binary: yp
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+release:
+  prerelease: auto
+universal_binaries:
+  - replace: true
+brews:
+  - name: yp
+    description: "Year Progress Indicator"
+    homepage: "https://github.com/martinsirbe/go-year-progress"
+    repository:
+      owner: martinsirbe
+      name: homebrew-clinkclank
+    commit_author:
+      name: martinsirbe
+      email: martins_irbe@mail.com
+    caveats: |
+      Thank you for installing the Year Progress Indicator (yp)! Here are some tips to get started:
+
+      ## Configuration and Usage
+
+      - Run `yp` in any terminal to see how much of the current year has elapsed, represented through a visually appealing progress bar.
+      - Customise the appearance of your progress bar with CLI options or environment variables for a personalized touch:
+        - Use CLI options like `--location` to set your timezone or `--total-blocks` to adjust the progress bar's length.
+        - Alternatively, set environment variables such as `YP_LOCATION` and `YP_TOTAL_BLOCKS` for persistent configurations.
+
+      ## Integration Ideas
+
+      - **Terminal Welcome Message**: Enhance your terminal sessions by adding `yp` to your shell's profile (e.g., `.bashrc`, `.zshrc`), so you can visualize the year's progress with every new terminal window.
+      - **GitHub README**: Make your project README stand out by including the year's progress bar.
+      - **Daily Logs/Journals**: Incorporate the progress bar in your digital or printed logs as a unique way to track the passage of time.
+      - **Personal Websites**: Share the year's progression with visitors by integrating the tool's output into your site.
+
+      For more details on options and configurations, run `yp --help` or check the GitHub repository: https://github.com/martinsirbe/yp
+
+      Enjoy visualising the passage of time with yp, and feel free to contribute to its development!
+    test: |
+      system "#{bin}/yp", "--help"
+checksum:
+  name_template: 'checksums.txt'

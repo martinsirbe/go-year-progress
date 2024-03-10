@@ -1,0 +1,25 @@
+name: Update repo description
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+jobs:
+  update-description:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install yp
+        run: brew install martinsirbe/clinkclank/yp
+      - name: Generate repo description
+        id: generate-description
+        run: |
+          description=$(yp -t 10)" 👈 Progressing through "$(date +"%Y")", a simple Go app that displays the current year's progress through a dynamic progress bar, reflecting the percentage of the year elapsed."
+          echo "DESCRIPTION=$description" >> $GITHUB_ENV
+      - name: Update repo description
+        uses: octokit/request-action@v2.1.9
+        with:
+          route: PATCH /repos/${{ github.repository }}
+          description: ${{ env.DESCRIPTION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PUBLISHER_TOKEN }}
