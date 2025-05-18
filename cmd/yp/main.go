@@ -50,9 +50,13 @@ func init() {
 func initConfig() {
 	viper.SetEnvPrefix("yp")
 	viper.AutomaticEnv()
+
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("failed to read in config: %s", err)
-		os.Exit(1)
+		_, notFound := err.(viper.ConfigFileNotFoundError)
+		if !notFound {
+			fmt.Printf("failed to read in config: %s\n", err)
+			os.Exit(1)
+		}
 	}
 }
 
