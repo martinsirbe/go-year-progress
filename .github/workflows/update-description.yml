@@ -16,8 +16,12 @@ jobs:
         run: |
           description=$(yp -t 10)" 👈 Progressing through "$(date +"%Y")", a simple Go app that displays the current year's progress through a dynamic progress bar, reflecting the percentage of the year elapsed."
           echo "DESCRIPTION=$description" >> $GITHUB_ENV
+      - name: Show description
+        run: echo "$DESCRIPTION"
+        env:
+          DESCRIPTION: ${{ env.DESCRIPTION }}
       - name: Update repo description
-        uses: octokit/request-action@v2.4.0
+        uses: octokit/request-action@v2.x
         with:
           route: PATCH /repos/${{ github.repository }}
           description: ${{ env.DESCRIPTION }}
